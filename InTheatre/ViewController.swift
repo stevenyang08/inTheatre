@@ -15,6 +15,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var movies = [NSDictionary]?()
     var movieStars = [NSDictionary]?()
     var apiKey = String()
+    var endpoint: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,25 +24,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         navigationController?.navigationBar.barTintColor = UIColor.darkGrayColor()
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
         apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        
-//        http://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed
-        let url = NSURL(string:"http://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
-        let request = NSURLRequest(URL: url!)
-        let session = NSURLSession(
-            configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
-            delegate: nil,
-            delegateQueue: NSOperationQueue.mainQueue()
-        )
-        let task : NSURLSessionDataTask = session.dataTaskWithRequest(request) { (dataOrNil, response, error) -> Void in
-            if let data = dataOrNil {
-                if let responseDictionary = try! NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary {
-//                    NSLog("response: \(responseDictionary)")
-                    self.movies = responseDictionary["results"] as? [NSDictionary]
-                    self.movieTableView.reloadData()
-                }
-            }
-        }
-        task.resume()
+        requestNetwork()
         
     }
 
@@ -101,6 +84,28 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
 
     // MARK: -Functions
+    func requestNetwork() {
+        
+        //        http://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed
+        let url = NSURL(string:"http://api.themoviedb.org/3/movie/\(endpoint)?api_key=\(apiKey)")
+        let request = NSURLRequest(URL: url!)
+        let session = NSURLSession(
+            configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
+            delegate: nil,
+            delegateQueue: NSOperationQueue.mainQueue()
+        )
+        let task : NSURLSessionDataTask = session.dataTaskWithRequest(request) { (dataOrNil, response, error) -> Void in
+            if let data = dataOrNil {
+                if let responseDictionary = try! NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary {
+                    //                    NSLog("response: \(responseDictionary)")
+                    self.movies = responseDictionary["results"] as? [NSDictionary]
+                    self.movieTableView.reloadData()
+                }
+            }
+        }
+        task.resume()
+    }
+    
     func movieStarApi(movieId: String) {
         let url = NSURL(string: "http://api.themoviedb.org/3/movie/\(movieId)/credits?api_key=\(self.apiKey)")!
         let request = NSURLRequest(URL: url)

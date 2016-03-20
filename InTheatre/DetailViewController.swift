@@ -11,6 +11,7 @@ import AFNetworking
 
 class DetailViewController: UIViewController {
 
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var posterView: UIImageView!
     @IBOutlet weak var releaseDate: UILabel!
     @IBOutlet weak var movieRating: UILabel!
@@ -25,6 +26,8 @@ class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor.darkGrayColor()
+        scrollView.contentSize = CGSize(width: scrollView.frame.width, height: movieView.frame.origin.y + movieView.frame.size.height)
         print(movie)
         apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
         
