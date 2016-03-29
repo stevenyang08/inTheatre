@@ -26,6 +26,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
         requestNetwork()
         
+        if endpoint == "top_rated" {
+            self.title = "Top Rated Movies"
+        }
+        
     }
 
     
@@ -53,8 +57,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         cell.movieYear.text = releaseDate
         cell.movieDescription.text = overview
         
-        if let rating = movie["vote_average"] as? NSNumber {
-            cell.movieRating.text = ("\(rating.stringValue)/10.00")
+        if let rating = movie["vote_average"] as? Float {
+            let ratingMain = String(format: "%.2f", rating)
+            cell.movieRating.text = ("\(ratingMain)/10.00")
         }
         
         let baseUrl = "http://image.tmdb.org/t/p/w500"
